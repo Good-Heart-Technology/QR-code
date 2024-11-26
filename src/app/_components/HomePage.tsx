@@ -10,8 +10,8 @@ export const HomePage = () => {
             <div className="w-4/5 mx-auto mt-6">
                 <Tabs defaultValue="single" className="w-full">
                     <TabsList className="grid w-full grid-cols-2 mb-8">
-                        <TabsTrigger value="single">Single QR Code</TabsTrigger>
-                        <TabsTrigger value="bulk">Bulk Creation</TabsTrigger>
+                        <TabsTrigger value="single" className="font-bold">Single QR Code</TabsTrigger>
+                        <TabsTrigger value="bulk" className="font-bold">Bulk Creation</TabsTrigger>
                     </TabsList>
                     
                     <TabsContent value="single">
