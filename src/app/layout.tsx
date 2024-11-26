@@ -16,7 +16,7 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "QR code 23",
+  title: "QR-23",
   description: "QR code 23 a product of Brainstation-23 PLC Dhaka, Bangladesh",
 };
 
