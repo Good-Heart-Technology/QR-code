@@ -47,7 +47,7 @@ const URLQRForm = () => {
           {/* URL Preview */}
           <div className="mt-4 p-4 bg-gray-50 rounded-lg">
             <div className="flex items-center space-x-2 text-sm text-gray-600">
-              <Link className="w-4 w-4" />
+              <Link className="w-4" />
               <span className="truncate">{url}</span>
             </div>
           </div>
