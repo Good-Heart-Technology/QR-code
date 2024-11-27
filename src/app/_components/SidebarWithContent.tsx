@@ -25,6 +25,7 @@ import {
 
 // Import your QR form components
 import URLQRForm from './QR/URLQRForm';
+import VCardQRForm from './QR/VCardQRForm';
 // Import other form components as they're created
 // import VCardQRForm from './VCardQRForm';
 // import CalendarQRForm from './CalendarQRForm';
@@ -47,7 +48,7 @@ const QRFormSelector = ({ activeItem }:{activeItem:string}) => {
     case 'url':
       return <URLQRForm />;
     case 'vcard':
-      return <div className="text-center text-gray-500">vCard QR form coming soon...</div>;
+      return <VCardQRForm />;
     case 'calendar':
       return <div className="text-center text-gray-500">Calendar QR form coming soon...</div>;
     case 'wifi':
