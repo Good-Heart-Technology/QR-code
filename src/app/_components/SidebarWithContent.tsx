@@ -23,6 +23,13 @@ import {
   SheetTrigger 
 } from "@/components/ui/sheet";
 
+// Import your QR form components
+import URLQRForm from './QR/URLQRForm';
+// Import other form components as they're created
+// import VCardQRForm from './VCardQRForm';
+// import CalendarQRForm from './CalendarQRForm';
+// etc.
+
 const menuItems = [
   { id: 'url', icon: Link, label: 'URL' },
   { id: 'vcard', icon: User, label: 'vCard' },
@@ -33,6 +40,30 @@ const menuItems = [
   { id: 'email', icon: Mail, label: 'Email' },
   { id: 'text', icon: FileText, label: 'Text' }
 ];
+
+// Component to render the appropriate form based on activeItem
+const QRFormSelector = ({ activeItem }:{activeItem:string}) => {
+  switch (activeItem) {
+    case 'url':
+      return <URLQRForm />;
+    case 'vcard':
+      return <div className="text-center text-gray-500">vCard QR form coming soon...</div>;
+    case 'calendar':
+      return <div className="text-center text-gray-500">Calendar QR form coming soon...</div>;
+    case 'wifi':
+      return <div className="text-center text-gray-500">WiFi QR form coming soon...</div>;
+    case 'location':
+      return <div className="text-center text-gray-500">Location QR form coming soon...</div>;
+    case 'phone':
+      return <div className="text-center text-gray-500">Phone QR form coming soon...</div>;
+    case 'email':
+      return <div className="text-center text-gray-500">Email QR form coming soon...</div>;
+    case 'text':
+      return <div className="text-center text-gray-500">Text QR form coming soon...</div>;
+    default:
+      return <URLQRForm />;
+  }
+};
 
 export const SidebarWithContent = () => {
   const [activeItem, setActiveItem] = useState('url');
@@ -94,7 +125,7 @@ export const SidebarWithContent = () => {
           <h2 className="text-2xl font-bold mb-4">
             Generate {activeItem.charAt(0).toUpperCase() + activeItem.slice(1)} QR Code
           </h2>
-          {/* Form components will be rendered here based on activeItem */}
+          <QRFormSelector activeItem={activeItem} />
         </div>
       </div>
     </div>
