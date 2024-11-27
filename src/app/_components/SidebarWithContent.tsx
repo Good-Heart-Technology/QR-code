@@ -29,6 +29,7 @@ import VCardQRForm from './QR/VCardQRForm';
 import CalendarQRForm from './QR/CalenderQRForm';
 import WiFiQRForm from './QR/WiFiQRForm';
 import LocationQRForm from './QR/LocationQRForm';
+import PhoneQRForm from './QR/PhoneQRForm';
 // Import other form components as they're created
 // import VCardQRForm from './VCardQRForm';
 // import CalendarQRForm from './CalendarQRForm';
@@ -59,7 +60,7 @@ const QRFormSelector = ({ activeItem }:{activeItem:string}) => {
     case 'location':
       return <LocationQRForm />;
     case 'phone':
-      return <div className="text-center text-gray-500">Phone QR form coming soon...</div>;
+      return <PhoneQRForm />;
     case 'email':
       return <div className="text-center text-gray-500">Email QR form coming soon...</div>;
     case 'text':
