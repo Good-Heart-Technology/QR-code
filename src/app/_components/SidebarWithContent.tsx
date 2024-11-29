@@ -30,6 +30,8 @@ import CalendarQRForm from './QR/CalenderQRForm';
 import WiFiQRForm from './QR/WiFiQRForm';
 import LocationQRForm from './QR/LocationQRForm';
 import PhoneQRForm from './QR/PhoneQRForm';
+import EmailQRForm from './QR/EmailQRForm';
+import TextQRForm from './QR/TextQRForm';
 // Import other form components as they're created
 // import VCardQRForm from './VCardQRForm';
 // import CalendarQRForm from './CalendarQRForm';
@@ -62,9 +64,9 @@ const QRFormSelector = ({ activeItem }:{activeItem:string}) => {
     case 'phone':
       return <PhoneQRForm />;
     case 'email':
-      return <div className="text-center text-gray-500">Email QR form coming soon...</div>;
+      return <EmailQRForm />;
     case 'text':
-      return <div className="text-center text-gray-500">Text QR form coming soon...</div>;
+      return <TextQRForm />
     default:
       return <URLQRForm />;
   }
