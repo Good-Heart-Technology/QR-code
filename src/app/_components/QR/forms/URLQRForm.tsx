@@ -3,7 +3,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Link } from 'lucide-react';
-import QRCodeGenerator from './QRCodeGenerator';
+import QRCodeGenerator from '../QRCodeGenerator';
 
 const URLQRForm = () => {
   const [url, setUrl] = useState('');

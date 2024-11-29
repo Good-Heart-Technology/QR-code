@@ -1,17 +1,9 @@
+// components/qr/QRCodeGenerator.tsx
 import React, { useEffect, useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-
-type QRDataTypes = 'url' | 'vcard' | 'calendar' | 'wifi' | 'location' | 'phone' | 'email' | 'text';
-type ErrorCorrectionLevel = 'L' | 'M' | 'Q' | 'H';
-
-interface QRCodeGeneratorProps {
-  data: any;
-  type?: QRDataTypes;
-  showLogo?: boolean;
-  size?: number;
-  logoPath?: string;
-  errorCorrectionLevel?: ErrorCorrectionLevel;
-}
+import { QRCodeGeneratorProps, QRCustomizationOptions } from './types/types';
+import { formatQRData } from '@/utils/qr-formatter';
+import QRCustomizeModal from './QRCustomizeModal';
 
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ 
   data, 
@@ -21,89 +13,82 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   logoPath = '/fav.webp',
   errorCorrectionLevel = 'H' 
 }) => {
-  const [qrLogoSize, setQrLogoSize] = useState(0);
   const [qrValue, setQrValue] = useState('');
+  const [baseConfig] = useState({
+    size,
+    logoUrl: showLogo ? logoPath : '',
+    errorCorrectionLevel,
+  });
+  
+  const [customization, setCustomization] = useState<QRCustomizationOptions>({
+    size: size,
+    errorCorrection: errorCorrectionLevel,
+    dotStyle: 'square',
+    foregroundColor: '#000000',
+    backgroundColor: '#ffffff',
+    logoUrl: showLogo ? logoPath : '',
+    frameStyle: 'none',
+    frameLabel: '',
+    labelColor: '#000000'
+  });
 
-  // Calculate logo size
   useEffect(() => {
-    const logoSize = Math.floor(size * 0.2); // Logo takes up 20% of QR code
-    setQrLogoSize(logoSize);
-  }, [size]);
-
-  // Format data based on type
-  useEffect(() => {
-    switch (type) {
-      case 'url':
-        setQrValue(data);
-        break;
-      case 'vcard':
-        // Format: MECARD:N:Last,First;TEL:1234567890;EMAIL:email@example.com;ADR:Street,City,State,ZIP;NOTE:Note;;
-        const vcard = `MECARD:N:${data.lastName},${data.firstName};` +
-                     `${data.tel ? `TEL:${data.tel};` : ''}` +
-                     `${data.email ? `EMAIL:${data.email};` : ''}` +
-                     `${data.address ? `ADR:${data.address};` : ''}` +
-                     `${data.note ? `NOTE:${data.note};` : ''};`;
-        setQrValue(vcard);
-        break;
-      case 'calendar':
-        // Format: BEGIN:VEVENT\nSUMMARY:Event\nDTSTART:20240101T100000Z\nDTEND:20240101T110000Z\nEND:VEVENT
-        const event = `BEGIN:VEVENT\n` +
-                     `SUMMARY:${data.summary}\n` +
-                     `DTSTART:${data.startDate}\n` +
-                     `DTEND:${data.endDate}\n` +
-                     `${data.location ? `LOCATION:${data.location}\n` : ''}` +
-                     `${data.description ? `DESCRIPTION:${data.description}\n` : ''}` +
-                     `END:VEVENT`;
-        setQrValue(event);
-        break;
-      case 'wifi':
-        // Format: WIFI:T:WPA;S:NetworkName;P:Password;;
-        const wifi = `WIFI:T:${data.encryption};S:${data.ssid};P:${data.password};;`;
-        setQrValue(wifi);
-        break;
-      case 'location':
-        // Format: geo:latitude,longitude
-        const location = `geo:${data.latitude},${data.longitude}`;
-        setQrValue(location);
-        break;
-      case 'phone':
-        // Format: tel:+1234567890
-        const phone = `tel:${data.number}`;
-        setQrValue(phone);
-        break;
-      case 'email':
-        // Format: mailto:email@example.com?subject=Subject&body=Body
-        const email = `mailto:${data.address}` +
-                     `${data.subject ? `?subject=${encodeURIComponent(data.subject)}` : ''}` +
-                     `${data.body ? `&body=${encodeURIComponent(data.body)}` : ''}`;
-        setQrValue(email);
-        break;
-      case 'text':
-        setQrValue(data.toString());
-        break;
-      default:
-        setQrValue(data.toString());
-    }
+    const formattedValue = formatQRData(data, type);
+    setQrValue(formattedValue);
   }, [data, type]);
+
+  const handleCustomizationChange = (key: keyof QRCustomizationOptions, value: QRCustomizationOptions[keyof QRCustomizationOptions]) => {
+    setCustomization((prev: QRCustomizationOptions) => ({
+      ...prev,
+      [key]: value
+    }));
+  };
 
   if (!qrValue) return null;
 
+  const logoSize = Math.floor(customization.size * 0.2);
+
   return (
-    <div className="flex justify-center">
-      <div className="relative inline-block">
+    <div className="flex flex-col items-center">
+      <div className="relative inline-block mb-16">
         <QRCodeSVG
           value={qrValue}
-          size={size}
-          level={errorCorrectionLevel}
+          size={customization.size}
+          level={customization.errorCorrection}
+          bgColor={customization.backgroundColor}
+          fgColor={customization.foregroundColor}
           includeMargin={true}
-          {...(showLogo && {
+          {...(customization.logoUrl && {
             imageSettings: {
-              src: logoPath,
-              height: qrLogoSize,
-              width: qrLogoSize,
+              src: customization.logoUrl,
+              height: logoSize,
+              width: logoSize,
               excavate: true,
             }
           })}
+        />
+        {customization.frameStyle !== 'none' && customization.frameLabel && (
+          <div
+            className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-1
+              ${customization.frameStyle === 'circle' ? 'rounded-full' : 'rounded'}
+              border-2`}
+            style={{
+              borderColor: customization.labelColor,
+              color: customization.labelColor,
+              backgroundColor: customization.backgroundColor
+            }}
+          >
+            {customization.frameLabel}
+          </div>
+        )}
+      </div>
+      
+      <div className="mt-4">
+        <QRCustomizeModal
+          options={customization}
+          onOptionsChange={handleCustomizationChange}
+          qrValue={qrValue}
+          baseConfig={baseConfig}
         />
       </div>
     </div>

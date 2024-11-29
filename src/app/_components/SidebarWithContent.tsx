@@ -24,14 +24,14 @@ import {
 } from "@/components/ui/sheet";
 
 // Import your QR form components
-import URLQRForm from './QR/URLQRForm';
-import VCardQRForm from './QR/VCardQRForm';
-import CalendarQRForm from './QR/CalenderQRForm';
-import WiFiQRForm from './QR/WiFiQRForm';
-import LocationQRForm from './QR/LocationQRForm';
-import PhoneQRForm from './QR/PhoneQRForm';
-import EmailQRForm from './QR/EmailQRForm';
-import TextQRForm from './QR/TextQRForm';
+import URLQRForm from './QR/forms/URLQRForm';
+import VCardQRForm from './QR/forms/VCardQRForm';
+import CalendarQRForm from './QR/forms/CalenderQRForm';
+import WiFiQRForm from './QR/forms/WiFiQRForm';
+import LocationQRForm from './QR/forms/LocationQRForm';
+import PhoneQRForm from './QR/forms/PhoneQRForm';
+import EmailQRForm from './QR/forms/EmailQRForm';
+import TextQRForm from './QR/forms/TextQRForm';
 // Import other form components as they're created
 // import VCardQRForm from './VCardQRForm';
 // import CalendarQRForm from './CalendarQRForm';

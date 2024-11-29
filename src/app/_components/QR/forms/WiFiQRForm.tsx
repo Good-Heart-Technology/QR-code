@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import QRCodeGenerator from './QRCodeGenerator';
+import QRCodeGenerator from '../QRCodeGenerator';
 
 interface WiFiFormData {
   ssid: string;
