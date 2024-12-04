@@ -1,5 +1,6 @@
 import { BulkCreation } from "./BulkCreation"
 import Navbar from "./Navbar"
+import { QRStyle } from "./QR/style/QRStyle"
 import { SidebarWithContent } from "./SidebarWithContent"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -9,9 +10,10 @@ export const HomePage = () => {
             <Navbar />
             <div className="w-4/5 mx-auto mt-6">
                 <Tabs defaultValue="single" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 mb-8">
+                    <TabsList className="grid w-full grid-cols-3 mb-8">
                         <TabsTrigger value="single" className="font-bold">Single QR Code</TabsTrigger>
                         <TabsTrigger value="bulk" className="font-bold">Bulk Creation</TabsTrigger>
+                        <TabsTrigger value="style" className="font-bold">Configure QR Style</TabsTrigger>
                     </TabsList>
                     
                     <TabsContent value="single">
@@ -23,6 +25,12 @@ export const HomePage = () => {
                     <TabsContent value="bulk">
                         <div className="space-y-4">
                             <BulkCreation />
+                        </div>
+                    </TabsContent>
+
+                    <TabsContent value="style">
+                        <div className="space-y-4">
+                            <QRStyle />
                         </div>
                     </TabsContent>
                 </Tabs>
