@@ -1,6 +1,6 @@
 import { BulkCreation } from "./BulkCreation"
 import Navbar from "./Navbar"
-import { QRStyle } from "./QR/style/QRStyle"
+import { QRStyle } from "./QR/QRStyle/QRStyle"
 import { SidebarWithContent } from "./SidebarWithContent"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
