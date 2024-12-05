@@ -1,6 +1,5 @@
-// components/qr/QRCodeGenerator.tsx
-import React, { useEffect, useState } from 'react';
-import { QRCodeSVG } from 'qrcode.react';
+import React, { useEffect, useState, useRef } from 'react';
+import QRCodeStyling from 'qr-code-styling';
 import { QRCodeGeneratorProps, QRCustomizationOptions } from './types/types';
 import { formatQRData } from '@/utils/qr-formatter';
 import QRCustomizeModal from './QRCustomizeModal';
@@ -14,6 +13,9 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   errorCorrectionLevel = 'H' 
 }) => {
   const [qrValue, setQrValue] = useState('');
+  const qrRef = useRef<any>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
   const [baseConfig] = useState({
     size,
     logoUrl: showLogo ? logoPath : '',
@@ -37,6 +39,66 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     setQrValue(formattedValue);
   }, [data, type]);
 
+  useEffect(() => {
+    if (!qrValue) return;
+
+    // Get stored configuration if exists
+    const storedConfig = localStorage.getItem('qr-style-config');
+    let styleConfig = {};
+    
+    if (storedConfig) {
+      try {
+        const parsedConfig = JSON.parse(storedConfig);
+        styleConfig = {
+          dotsOptions: parsedConfig.dotsOptions,
+          cornersSquareOptions: parsedConfig.cornersSquareOptions,
+          cornersDotOptions: parsedConfig.cornersDotOptions,
+          backgroundOptions: parsedConfig.backgroundOptions,
+        };
+      } catch (error) {
+        console.error('Error parsing QR config:', error);
+      }
+    }
+
+    // Create new QR code instance
+    qrRef.current = new QRCodeStyling({
+      width: customization.size,
+      height: customization.size,
+      data: qrValue,
+      margin: 10,
+      ...styleConfig,
+      image: customization.logoUrl || undefined,
+      imageOptions: customization.logoUrl ? {
+        hideBackgroundDots: true,
+        imageSize: 0.2,
+        margin: 5,
+      } : undefined,
+    });
+
+    // Clear and append to container
+    if (containerRef.current) {
+      containerRef.current.innerHTML = '';
+      qrRef.current.append(containerRef.current);
+    }
+  }, [qrValue, customization.size, customization.logoUrl]);
+
+  // Update QR code when customization changes
+  useEffect(() => {
+    if (!qrRef.current) return;
+
+    qrRef.current.update({
+      width: customization.size,
+      height: customization.size,
+      data: qrValue,
+      image: customization.logoUrl || undefined,
+      imageOptions: customization.logoUrl ? {
+        hideBackgroundDots: true,
+        imageSize: 0.2,
+        margin: 5,
+      } : undefined,
+    });
+  }, [customization, qrValue]);
+
   const handleCustomizationChange = (key: keyof QRCustomizationOptions, value: QRCustomizationOptions[keyof QRCustomizationOptions]) => {
     setCustomization((prev: QRCustomizationOptions) => ({
       ...prev,
@@ -46,27 +108,10 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
   if (!qrValue) return null;
 
-  const logoSize = Math.floor(customization.size * 0.2);
-
   return (
     <div className="flex flex-col items-center">
       <div className="relative inline-block mb-16">
-        <QRCodeSVG
-          value={qrValue}
-          size={customization.size}
-          level={customization.errorCorrection}
-          bgColor={customization.backgroundColor}
-          fgColor={customization.foregroundColor}
-          includeMargin={true}
-          {...(customization.logoUrl && {
-            imageSettings: {
-              src: customization.logoUrl,
-              height: logoSize,
-              width: logoSize,
-              excavate: true,
-            }
-          })}
-        />
+        <div ref={containerRef} className="qr-code-container" />
         {customization.frameStyle !== 'none' && customization.frameLabel && (
           <div
             className={`absolute -bottom-8 left-1/2 transform -translate-x-1/2 px-4 py-1
@@ -81,15 +126,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
             {customization.frameLabel}
           </div>
         )}
-      </div>
-      
-      <div className="mt-4">
-        <QRCustomizeModal
-          options={customization}
-          onOptionsChange={handleCustomizationChange}
-          qrValue={qrValue}
-          baseConfig={baseConfig}
-        />
       </div>
     </div>
   );
