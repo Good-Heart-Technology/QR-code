@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from 'react';
 import QRCodeStyling from 'qr-code-styling';
 import { QRCodeGeneratorProps, QRCustomizationOptions } from './types/types';
 import { formatQRData } from '@/utils/qr-formatter';
-import QRCustomizeModal from './QRCustomizeModal';
 
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({ 
   data, 
@@ -15,12 +14,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   const [qrValue, setQrValue] = useState('');
   const qrRef = useRef<any>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  const [baseConfig] = useState({
-    size,
-    logoUrl: showLogo ? logoPath : '',
-    errorCorrectionLevel,
-  });
   
   const [customization, setCustomization] = useState<QRCustomizationOptions>({
     size: size,
@@ -98,13 +91,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
       } : undefined,
     });
   }, [customization, qrValue]);
-
-  const handleCustomizationChange = (key: keyof QRCustomizationOptions, value: QRCustomizationOptions[keyof QRCustomizationOptions]) => {
-    setCustomization((prev: QRCustomizationOptions) => ({
-      ...prev,
-      [key]: value
-    }));
-  };
 
   if (!qrValue) return null;
 

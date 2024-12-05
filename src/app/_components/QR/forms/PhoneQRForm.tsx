@@ -4,10 +4,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import QRCodeGenerator from '../QRCodeGenerator';
 
-interface PhoneFormData {
-  number: string;
-}
-
 const PhoneQRForm = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [showQR, setShowQR] = useState(false);
