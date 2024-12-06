@@ -75,7 +75,7 @@ export const QRStyle = () => {
           } : undefined
         }
       };
-      
+
       qrCode.update(updatedConfig);
       saveToStorage(STORAGE_KEYS.CONFIG, updatedConfig);
     }
@@ -183,11 +183,11 @@ export const QRStyle = () => {
           </AccordionItem>
         </Accordion>
 
-        <Card className="p-4">
+        {/* <Card className="p-4">
           <Button onClick={() => exportConfigAsJson(config)}>
             Export Options as JSON
           </Button>
-        </Card>
+        </Card> */}
       </div>
 
       <div className="space-y-4">

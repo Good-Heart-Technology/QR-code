@@ -1,7 +1,7 @@
 import QRStyle from "../_components/QR/QRStyle/QRStyle";
 
 const ConfigurePage = () => {
-    return <div className="w-[80%] h-screen flex justify-center items-center">
+    return <div className="w-[80%] mt-6 flex justify-center items-center">
         <QRStyle/>
     </div>
 }

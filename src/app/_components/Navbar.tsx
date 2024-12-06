@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { MoonIcon, SunIcon, Settings } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import Link from 'next/link';
 
 const Navbar = () => {
   const { theme, setTheme } = useTheme();
@@ -15,7 +16,7 @@ const Navbar = () => {
       <div className="flex h-16 items-center px-4">
         {/* Logo */}
         <div className="flex items-center">
-          <span className="text-xl font-bold">QR-23</span>
+          <Link href="/" className="text-xl font-bold">QR-23</Link>
         </div>
 
         {/* Theme Toggle and Configuration */}
