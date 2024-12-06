@@ -1,5 +1,22 @@
 import React, { useEffect, useState, useRef } from 'react';
 import QRCodeStyling from 'qr-code-styling';
+import { 
+  Dialog, 
+  DialogContent, 
+  DialogHeader, 
+  DialogTitle,
+  DialogTrigger
+} from '@/components/ui/dialog';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Download } from 'lucide-react';
 import { QRCodeGeneratorProps, QRCustomizationOptions } from './types/types';
 import { formatQRData } from '@/utils/qr-formatter';
 
@@ -14,9 +31,12 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   const [qrValue, setQrValue] = useState<string>('');
   const qrRef = useRef<QRCodeStyling | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const [downloadHeightSize, setDownloadHeightSize] = useState(size);
+  const [downloadWidthSize, setDownloadWidthSize] = useState(size);
+  const [downloadFormat, setDownloadFormat] = useState<'svg' | 'png' | 'jpeg' | 'webp'>('png');
   
   const [customization, setCustomization] = useState<QRCustomizationOptions>({
-    size:300,
+    size: 300,
     errorCorrection: errorCorrectionLevel,
     dotStyle: 'square',
     foregroundColor: '#000000',
@@ -61,7 +81,6 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
       if (storedConfig) {
         try {
           const parsedConfig = JSON.parse(storedConfig);
-
           errorLevel = parsedConfig.errorCorrectionLevel || 'H';
           styleConfig = {
             dotsOptions: parsedConfig.dotsOptions,
@@ -83,9 +102,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
         errorCorrectionLevel: errorLevel,
         ...styleConfig,
       };
-
-      console.log(qrConfig);
- 
+      
       // Add image configuration only if logo is present
       if (customization.logoUrl) {
         qrConfig.image = customization.logoUrl;
@@ -145,6 +162,35 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     };
   }, []);
 
+  const handleDownload = async () => {
+    if (!qrRef.current) return;
+    
+    try {
+      const extension = downloadFormat === 'jpeg' ? 'jpg' : downloadFormat;
+      const filename = `qr-code.${extension}`;
+      
+      // Update QR size for download
+      await qrRef.current.update({
+        width: downloadWidthSize,
+        height: downloadHeightSize
+      });
+      
+      // Download the file
+      await qrRef.current.download({
+        name: filename,
+        extension: downloadFormat
+      });
+      
+      // Reset QR size to original
+      await qrRef.current.update({
+        width: customization.size,
+        height: customization.size
+      });
+    } catch (error) {
+      console.error('Error downloading QR code:', error);
+    }
+  };
+
   if (!qrValue) return null;
 
   return (
@@ -170,6 +216,74 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
           </div>
         )}
       </div>
+      
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant="outline" className="mt-4">
+            <Download className="mr-2 h-4 w-4" />
+            Download QR Code
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Download QR Code</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="size" className="text-right">
+                Height Size (px)
+              </label>
+              <Input
+                id="size"
+                type="number"
+                value={downloadHeightSize}
+                onChange={(e) => setDownloadHeightSize(Number(e.target.value))}
+                min={128}
+                max={2048}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="size" className="text-right">
+                Width Size (px)
+              </label>
+              <Input
+                id="size"
+                type="number"
+                value={downloadWidthSize}
+                onChange={(e) => setDownloadWidthSize(Number(e.target.value))}
+                min={128}
+                max={2048}
+                className="col-span-3"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <label htmlFor="format" className="text-right">
+                Format
+              </label>
+              <Select
+                value={downloadFormat}
+                onValueChange={(value: 'svg' | 'png' | 'jpeg' | 'webp') => setDownloadFormat(value)}
+              >
+                <SelectTrigger className="col-span-3">
+                  <SelectValue placeholder="Select format" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="svg">SVG</SelectItem>
+                  <SelectItem value="png">PNG</SelectItem>
+                  <SelectItem value="jpeg">JPEG</SelectItem>
+                  <SelectItem value="webp">WEBP</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+          <div className="flex justify-end">
+            <Button onClick={handleDownload}>
+              Download
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
