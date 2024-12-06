@@ -47,7 +47,7 @@ export const QRStyle = () => {
   useEffect(() => {
     const qr = new QRCodeStyling(config);
     setQrCode(qr);
-    
+
     if (qrRef.current) {
       qrRef.current.innerHTML = '';
       qr.append(qrRef.current);
@@ -65,6 +65,7 @@ export const QRStyle = () => {
     if (qrCode) {
       const updatedConfig = {
         ...config,
+        errorCorrectionLevel,
         dotsOptions: {
           ...config.dotsOptions,
           gradient: colorType === "gradient" ? {
@@ -78,8 +79,7 @@ export const QRStyle = () => {
       qrCode.update(updatedConfig);
       saveToStorage(STORAGE_KEYS.CONFIG, updatedConfig);
     }
-  }, [config, colorType, gradientType]);
-
+  }, [config, colorType, gradientType, errorCorrectionLevel]); 
   // Save state changes to localStorage
   useEffect(() => {
     saveToStorage(STORAGE_KEYS.COLOR_TYPE, colorType);
