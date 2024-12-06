@@ -24,7 +24,7 @@ export interface QRCustomizationOptions {
     dotStyle: "square" | "dots" | "rounded";
     foregroundColor: string;
     backgroundColor: string;
-    logoUrl: string;
+    logoUrl?: string;
     frameStyle: "none" | "square" | "circle";
     frameLabel: string;
     labelColor: string;

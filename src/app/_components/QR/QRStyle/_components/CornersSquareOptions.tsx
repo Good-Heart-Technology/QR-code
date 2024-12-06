@@ -1,10 +1,11 @@
+'use client'
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { QRConfig, CornerSquareType, GradientType } from "../types/qrTypes";
-import { useState } from "react";
 
 interface CornersSquareOptionsProps {
   config: QRConfig;
@@ -15,84 +16,110 @@ export const CornersSquareOptions = ({
   config,
   onConfigChange,
 }: CornersSquareOptionsProps) => {
-  const [colorType, setColorType] = useState<"single" | "gradient">(
-    config.cornersSquareOptions.gradient ? "gradient" : "single"
-  );
-  const [gradientType, setGradientType] = useState<GradientType>(
-    config.cornersSquareOptions.gradient?.type || "linear"
-  );
-
-  const handleCornersSquareOptionsChange = (updates: Partial<typeof config.cornersSquareOptions>) => {
+  const handleTypeChange = (value: CornerSquareType) => {
     onConfigChange({
       cornersSquareOptions: {
         ...config.cornersSquareOptions,
-        ...updates
+        type: value
       }
     });
   };
 
   const handleColorTypeChange = (value: "single" | "gradient") => {
-    setColorType(value);
     if (value === "single") {
-      // Remove gradient when switching to single color
-      const { gradient, ...rest } = config.cornersSquareOptions;
-      handleCornersSquareOptionsChange(rest);
+      onConfigChange({
+        cornersSquareOptions: {
+          ...config.cornersSquareOptions,
+          type: config.cornersSquareOptions.type || 'square',
+          color: config.cornersSquareOptions.gradient?.colorStops[0].color || '#000000',
+          gradient: undefined
+        }
+      });
     } else {
-      // Add default gradient when switching to gradient
-      handleCornersSquareOptionsChange({
-        gradient: {
-          type: gradientType,
-          rotation: 0,
-          colorStops: [
-            { offset: 0, color: config.cornersSquareOptions.color },
-            { offset: 1, color: "#000000" }
-          ]
+      const currentColor = config.cornersSquareOptions.color || '#000000';
+      onConfigChange({
+        cornersSquareOptions: {
+          ...config.cornersSquareOptions,
+          type: config.cornersSquareOptions.type || 'square',
+          gradient: {
+            type: "linear",
+            rotation: 0,
+            colorStops: [
+              { offset: 0, color: currentColor },
+              { offset: 1, color: currentColor }
+            ]
+          }
         }
       });
     }
   };
 
   const handleGradientTypeChange = (value: GradientType) => {
-    setGradientType(value);
-    if (config.cornersSquareOptions.gradient) {
-      handleCornersSquareOptionsChange({
+    if (!config.cornersSquareOptions.gradient) return;
+    
+    onConfigChange({
+      cornersSquareOptions: {
+        ...config.cornersSquareOptions,
         gradient: {
           ...config.cornersSquareOptions.gradient,
           type: value
         }
-      });
-    }
+      }
+    });
   };
 
   const handleGradientColorChange = (index: number, color: string) => {
     if (!config.cornersSquareOptions.gradient) return;
     
-    const newColorStops = [...config.cornersSquareOptions.gradient.colorStops];
-    newColorStops[index] = { ...newColorStops[index], color };
+    const newColorStops = config.cornersSquareOptions.gradient.colorStops.map(
+      (stop, i) => i === index ? { ...stop, color } : stop
+    );
 
-    handleCornersSquareOptionsChange({
-      gradient: {
-        ...config.cornersSquareOptions.gradient,
-        colorStops: newColorStops
+    onConfigChange({
+      cornersSquareOptions: {
+        ...config.cornersSquareOptions,
+        gradient: {
+          ...config.cornersSquareOptions.gradient,
+          colorStops: newColorStops
+        }
+      }
+    });
+  };
+
+  const handleRotationChange = (rotation: number) => {
+    if (!config.cornersSquareOptions.gradient) return;
+    
+    onConfigChange({
+      cornersSquareOptions: {
+        ...config.cornersSquareOptions,
+        gradient: {
+          ...config.cornersSquareOptions.gradient,
+          rotation
+        }
+      }
+    });
+  };
+
+  const handleSingleColorChange = (color: string) => {
+    onConfigChange({
+      cornersSquareOptions: {
+        type: config.cornersSquareOptions.type,
+        color
       }
     });
   };
 
   const handleClearColor = () => {
-    if (colorType === "single") {
-      handleCornersSquareOptionsChange({ color: '#000000' });
+    if (config.cornersSquareOptions.gradient) {
+      handleGradientColorChange(0, '#000000');
+      handleGradientColorChange(1, '#000000');
     } else {
-      handleCornersSquareOptionsChange({
-        gradient: {
-          ...config.cornersSquareOptions.gradient!,
-          colorStops: [
-            { offset: 0, color: '#000000' },
-            { offset: 1, color: '#000000' }
-          ]
-        }
-      });
+      handleSingleColorChange('#000000');
     }
   };
+
+  const colorType = config.cornersSquareOptions.gradient ? "gradient" : "single";
+  const gradientType = config.cornersSquareOptions.gradient?.type || "linear";
 
   return (
     <div className="space-y-4">
@@ -100,7 +127,7 @@ export const CornersSquareOptions = ({
         <Label>Corners Square Style</Label>
         <Select
           value={config.cornersSquareOptions.type}
-          onValueChange={(value: CornerSquareType) => handleCornersSquareOptionsChange({ type: value })}
+          onValueChange={handleTypeChange}
         >
           <SelectTrigger>
             <SelectValue />
@@ -139,7 +166,7 @@ export const CornersSquareOptions = ({
             <Input
               type="color"
               value={config.cornersSquareOptions.color}
-              onChange={(e) => handleCornersSquareOptionsChange({ color: e.target.value })}
+              onChange={(e) => handleSingleColorChange(e.target.value)}
               className="w-full"
             />
             <Button 
@@ -175,7 +202,7 @@ export const CornersSquareOptions = ({
             <Label>Start Color</Label>
             <Input
               type="color"
-              value={config.cornersSquareOptions.gradient?.colorStops[0].color}
+              value={config.cornersSquareOptions.gradient?.colorStops[0]?.color || '#000000'}
               onChange={(e) => handleGradientColorChange(0, e.target.value)}
             />
           </div>
@@ -184,7 +211,7 @@ export const CornersSquareOptions = ({
             <Label>End Color</Label>
             <Input
               type="color"
-              value={config.cornersSquareOptions.gradient?.colorStops[1].color}
+              value={config.cornersSquareOptions.gradient?.colorStops[1]?.color || '#000000'}
               onChange={(e) => handleGradientColorChange(1, e.target.value)}
             />
           </div>
@@ -195,12 +222,7 @@ export const CornersSquareOptions = ({
               <Input
                 type="number"
                 value={config.cornersSquareOptions.gradient?.rotation || 0}
-                onChange={(e) => handleCornersSquareOptionsChange({
-                  gradient: {
-                    ...config.cornersSquareOptions.gradient!,
-                    rotation: Number(e.target.value)
-                  }
-                })}
+                onChange={(e) => handleRotationChange(Number(e.target.value))}
                 min={0}
                 max={360}
               />

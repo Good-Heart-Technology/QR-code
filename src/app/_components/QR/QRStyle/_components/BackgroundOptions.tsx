@@ -32,19 +32,21 @@ export const BackgroundOptions = ({
 
   const handleColorTypeChange = (value: "single" | "gradient") => {
     setColorType(value);
+    
     if (value === "single") {
-      // Remove gradient when switching to single color
-      const { gradient, ...rest } = config.backgroundOptions;
-      handleBackgroundOptionsChange(rest);
+      handleBackgroundOptionsChange({
+        color: config.backgroundOptions.gradient?.colorStops[0].color || '#ffffff',
+        gradient: undefined
+      });
     } else {
-      // Add default gradient when switching to gradient
+      const currentColor = config.backgroundOptions.color || '#ffffff';
       handleBackgroundOptionsChange({
         gradient: {
           type: gradientType,
           rotation: 0,
           colorStops: [
-            { offset: 0, color: config.backgroundOptions.color },
-            { offset: 1, color: "#ffffff" }
+            { offset: 0, color: currentColor },
+            { offset: 1, color: currentColor }
           ]
         }
       });

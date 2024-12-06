@@ -128,11 +128,6 @@ export const QRStyle = () => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="space-y-4">
-        <MainOptions 
-          config={config}
-          onConfigChange={handleConfigChange}
-        />
-
         <Accordion 
           type="single" 
           collapsible 
@@ -197,20 +192,8 @@ export const QRStyle = () => {
         <Card className="p-6">
           <div ref={qrRef} className="flex justify-center" />
           <div className="mt-4 flex justify-end space-x-2">
-            <Select
-              value={downloadFormat}
-              onValueChange={setDownloadFormat}
-            >
-              <SelectTrigger className="w-24">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="png">PNG</SelectItem>
-                <SelectItem value="jpeg">JPEG</SelectItem>
-                <SelectItem value="webp">WEBP</SelectItem>
-              </SelectContent>
-            </Select>
-            <Button onClick={handleDownload}>Download</Button>
+
+            
           </div>
         </Card>
       </div>

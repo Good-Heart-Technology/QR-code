@@ -33,19 +33,23 @@ export const CornersDotOptions = ({
 
   const handleColorTypeChange = (value: "single" | "gradient") => {
     setColorType(value);
+    
     if (value === "single") {
-      // Remove gradient when switching to single color
-      const { gradient, ...rest } = config.cornersDotOptions;
-      handleCornersDotOptionsChange(rest);
-    } else {
-      // Add default gradient when switching to gradient
       handleCornersDotOptionsChange({
+        type: config.cornersDotOptions.type || 'dot',
+        color: config.cornersDotOptions.gradient?.colorStops[0].color || '#000000',
+        gradient: undefined
+      });
+    } else {
+      const currentColor = config.cornersDotOptions.color || '#000000';
+      handleCornersDotOptionsChange({
+        type: config.cornersDotOptions.type || 'dot',
         gradient: {
           type: gradientType,
           rotation: 0,
           colorStops: [
-            { offset: 0, color: config.cornersDotOptions.color },
-            { offset: 1, color: "#000000" }
+            { offset: 0, color: currentColor },
+            { offset: 1, color: currentColor }
           ]
         }
       });
