@@ -10,14 +10,6 @@ import {
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { MainOptions } from './_components/MainOptions';
 import { DotsOptions } from './_components/DotsOptions';
 import { CornersSquareOptions } from './_components/CornersSquareOptions';
 import { CornersDotOptions } from './_components/CornersDotOptions';
@@ -44,6 +36,10 @@ export const QRStyle = () => {
   const [activeAccordion, setActiveAccordion] = useState<string>(() => 
     loadFromStorage(STORAGE_KEYS.ACCORDION_STATE, "")
   );
+
+  const [errorCorrectionLevel, setErrorCorrectionLevel] = useState(() =>
+  loadFromStorage(STORAGE_KEYS.ERROR_CORRECTION_LEVEL, DEFAULT_CONFIG.errorCorrectionLevel)
+);
 
   const qrRef = useRef<HTMLDivElement>(null);
 
@@ -125,6 +121,11 @@ export const QRStyle = () => {
     }
   };
 
+  const handleErrorCorrectionChange = (value:"L" | "M" | "Q" | "H") => {
+    setErrorCorrectionLevel(value);
+    handleConfigChange({ errorCorrectionLevel: value });
+  };
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       <div className="space-y-4">
@@ -138,7 +139,7 @@ export const QRStyle = () => {
           <AccordionItem value="dots">
             <AccordionTrigger className="bg-muted px-4">Dots Options</AccordionTrigger>
             <AccordionContent className="p-4">
-              <DotsOptions
+            <DotsOptions
                 config={config}
                 colorType={colorType}
                 gradientType={gradientType}
@@ -146,6 +147,7 @@ export const QRStyle = () => {
                 onColorTypeChange={setColorType}
                 onGradientTypeChange={setGradientType}
                 onGradientColorChange={handleGradientColorChange}
+                onErrorCorrectionChange={handleErrorCorrectionChange}
               />
             </AccordionContent>
           </AccordionItem>

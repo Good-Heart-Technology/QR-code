@@ -14,6 +14,7 @@ interface DotsOptionsProps {
   onColorTypeChange: (value: "single" | "gradient") => void;
   onGradientTypeChange: (value: GradientType) => void;
   onGradientColorChange: (index: number, color: string) => void;
+  onErrorCorrectionChange: (value: "L" | "M" | "Q" | "H") => void;
 }
 
 export const DotsOptions = ({
@@ -23,7 +24,8 @@ export const DotsOptions = ({
   onDotsOptionsChange,
   onColorTypeChange,
   onGradientTypeChange,
-  onGradientColorChange
+  onGradientColorChange,
+  onErrorCorrectionChange
 }: DotsOptionsProps) => {
   return (
     <div className="space-y-4">
@@ -42,6 +44,24 @@ export const DotsOptions = ({
                 {type.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}
               </SelectItem>
             ))}
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="space-y-2">
+        <Label>Error Correction Level</Label>
+        <Select
+          value={config.errorCorrectionLevel}
+          onValueChange={onErrorCorrectionChange}
+        >
+          <SelectTrigger>
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="L">Low (7%)</SelectItem>
+            <SelectItem value="M">Medium (15%)</SelectItem>
+            <SelectItem value="Q">Quartile (25%)</SelectItem>
+            <SelectItem value="H">High (30%)</SelectItem>
           </SelectContent>
         </Select>
       </div>

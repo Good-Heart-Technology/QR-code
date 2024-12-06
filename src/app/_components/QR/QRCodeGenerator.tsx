@@ -51,15 +51,18 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
   // Initialize QR code instance
   useEffect(() => {
     if (!qrValue) return;
-
+ 
     try {
       // Get stored configuration if exists
       const storedConfig = localStorage.getItem('qr-style-config');
       let styleConfig = {};
+      let errorLevel = 'H';
       
       if (storedConfig) {
         try {
           const parsedConfig = JSON.parse(storedConfig);
+
+          errorLevel = parsedConfig.errorCorrectionLevel || 'H';
           styleConfig = {
             dotsOptions: parsedConfig.dotsOptions,
             cornersSquareOptions: parsedConfig.cornersSquareOptions,
@@ -70,16 +73,19 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
           console.error('Error parsing QR config:', error);
         }
       }
-
+ 
       // Create QR code configuration
       const qrConfig: any = {
         width: customization.size,
         height: customization.size,
         data: qrValue,
         margin: 10,
+        errorCorrectionLevel: errorLevel,
         ...styleConfig,
       };
 
+      console.log(qrConfig);
+ 
       // Add image configuration only if logo is present
       if (customization.logoUrl) {
         qrConfig.image = customization.logoUrl;
@@ -89,10 +95,10 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
           margin: 5,
         };
       }
-
+ 
       // Create new QR code instance
       qrRef.current = new QRCodeStyling(qrConfig);
-
+ 
       // Clear and append to container
       if (containerRef.current) {
         containerRef.current.innerHTML = '';

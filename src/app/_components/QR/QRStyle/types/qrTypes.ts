@@ -15,6 +15,7 @@ export interface QRConfig {
     margin: number;
     data: string;
     image?: string;
+    errorCorrectionLevel: "L" | "M" | "Q" | "H";
     dotsOptions: {
         type: DotType;
         color: string;

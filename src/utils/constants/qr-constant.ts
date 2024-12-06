@@ -9,6 +9,7 @@ export const STORAGE_KEYS = {
     GRADIENT_TYPE: "qr-gradient-type",
     DOWNLOAD_FORMAT: "qr-download-format",
     ACCORDION_STATE: "qr-accordion-state",
+    ERROR_CORRECTION_LEVEL: "qr-error-correction-level",
 } as const;
 
 export const DEFAULT_GRADIENT = {
@@ -41,4 +42,5 @@ export const DEFAULT_CONFIG: QRConfig = {
     backgroundOptions: {
         color: "#ffffff",
     },
+    errorCorrectionLevel: "H",
 };
