@@ -31,16 +31,6 @@ const Navbar = () => {
             <MoonIcon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
             <span className="sr-only">Toggle theme</span>
           </Button>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-9 w-9"
-            onClick={() => router.push('/configure')}
-          >
-            <Settings className="h-4 w-4" />
-            <span className="sr-only">Open configuration</span>
-          </Button>
         </div>
       </div>
     </div>
