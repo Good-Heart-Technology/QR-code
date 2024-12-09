@@ -105,10 +105,10 @@ const CalendarQRForm = () => {
                 type="datetime-local"
                 value={formData.startDateTime}
                 onChange={handleInputChange}
-                className="flex-1"
+                style={{width:'auto'}}
               />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 flex flex-col items-end">
               <label htmlFor="endDateTime" className="text-sm font-medium">
                 End Date & Time
               </label>
@@ -118,7 +118,7 @@ const CalendarQRForm = () => {
                 type="datetime-local"
                 value={formData.endDateTime}
                 onChange={handleInputChange}
-                className="flex-1"
+                style={{width:'auto'}}
               />
             </div>
           </div>
