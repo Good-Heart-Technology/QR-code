@@ -32,6 +32,8 @@ import {
 
 import { STORAGE_KEYS } from "@/utils/constants/qr-constant";
 
+let initialLoad = true;
+
 const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
     data,
     type = "text",
@@ -53,7 +55,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
 
     // Initialize config from localStorage if Redux is empty
     useEffect(() => {
-        if (!qrConfig || Object.keys(qrConfig).length === 0) {
+        if (initialLoad) {
             const storedConfig = localStorage.getItem(STORAGE_KEYS.CONFIG);
             if (storedConfig) {
                 try {
@@ -63,6 +65,7 @@ const QRCodeGenerator: React.FC<QRCodeGeneratorProps> = ({
                     console.error("Error parsing stored QR config:", error);
                 }
             }
+            initialLoad = false;
         }
     }, [dispatch, qrConfig]);
 
